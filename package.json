@@ -2,7 +2,10 @@
   "name": "@boilerplate/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+		"lint": "nx run-many --target=lint",
+		"typecheck": "nx run-many --target=typecheck"
+	},
   "private": true,
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -46,6 +49,7 @@
     "webpack-cli": "^5.1.4"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/messages/*"
   ]
 }

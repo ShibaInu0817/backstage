@@ -8,6 +8,15 @@
     },
     {
       "path": "./apps/boilerplate"
+    },
+    {
+      "path": "./libs/messages/messages-domain"
+    },
+    {
+      "path": "./libs/messages/messages-application"
+    },
+    {
+      "path": "./libs/messages/messages-infra"
     }
   ]
 }

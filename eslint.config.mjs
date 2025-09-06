@@ -20,18 +20,13 @@ export default [
             "@nx/enforce-module-boundaries": [
                 "error",
                 {
-                    enforceBuildableLibDependency: true,
-                    allow: [
-                        "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
-                    ],
-                    depConstraints: [
-                        {
-                            sourceTag: "*",
-                            onlyDependOnLibsWithTags: [
-                                "*"
-                            ]
-                        }
-                    ]
+                  enforceBuildableLibDependency: true,
+                  allow: ["^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"],
+                  depConstraints: [
+                    { sourceTag: "layer:application", onlyDependOnLibsWithTags: ["layer:domain", "layer:application"] },
+                    { sourceTag: "layer:infrastructure", onlyDependOnLibsWithTags: ["layer:domain", "layer:application", "layer:infrastructure"] },
+                    { sourceTag: "layer:domain", onlyDependOnLibsWithTags: ["layer:domain"] }
+                  ]
                 }
             ]
         }
