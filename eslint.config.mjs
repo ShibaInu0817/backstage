@@ -24,7 +24,7 @@ export default [
                   allow: ["^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"],
                   depConstraints: [
                     { sourceTag: "layer:application", onlyDependOnLibsWithTags: ["layer:domain", "layer:application"] },
-                    { sourceTag: "layer:infrastructure", onlyDependOnLibsWithTags: ["layer:domain", "layer:application", "layer:infrastructure"] },
+                    { sourceTag: "layer:infra", onlyDependOnLibsWithTags: ["layer:domain", "layer:application", "layer:infra"] },
                     { sourceTag: "layer:domain", onlyDependOnLibsWithTags: ["layer:domain"] }
                   ]
                 }

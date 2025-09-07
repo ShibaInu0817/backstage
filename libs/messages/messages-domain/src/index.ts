@@ -1,1 +1,1 @@
-export * from './lib/messages-domain.module';
+export * from './lib/entities';

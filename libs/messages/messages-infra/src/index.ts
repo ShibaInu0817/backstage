@@ -1,1 +1,1 @@
-export * from './lib/messages-infra.module';
+export * from './lib/module';
