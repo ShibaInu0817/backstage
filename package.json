@@ -3,13 +3,15 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-		"lint": "nx run-many --target=lint",
-		"typecheck": "nx run-many --target=typecheck"
-	},
+    "lint": "nx run-many --target=lint",
+    "typecheck": "nx run-many --target=typecheck"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.0",
+    "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.0",
     "axios": "^1.6.0",
     "reflect-metadata": "^0.1.13",
@@ -50,6 +52,7 @@
   },
   "workspaces": [
     "apps/*",
-    "libs/messages/*"
+    "libs/messages/*",
+    "libs/shared/*"
   ]
 }

@@ -17,6 +17,9 @@
     },
     {
       "path": "./libs/messages/messages-infra"
+    },
+    {
+      "path": "./libs/shared/infra"
     }
   ]
 }

@@ -22,7 +22,11 @@
       },
       {
         "sourceTag": "layer:infra",
-        "onlyDependOnLibsWithTags": ["layer:domain", "layer:application", "layer:infra"]
+        "onlyDependOnLibsWithTags": [
+          "layer:domain",
+          "layer:application",
+          "layer:infra"
+        ]
       },
       {
         "sourceTag": "layer:domain",
@@ -47,7 +51,8 @@
       "exclude": [
         "libs/messages/messages-domain/*",
         "libs/messages/messages-application/*",
-        "libs/messages/messages-infra/*"
+        "libs/messages/messages-infra/*",
+        "libs/shared/infra/*"
       ]
     },
     {
@@ -79,7 +84,8 @@
       "include": [
         "libs/messages/messages-domain/*",
         "libs/messages/messages-application/*",
-        "libs/messages/messages-infra/*"
+        "libs/messages/messages-infra/*",
+        "libs/shared/infra/*"
       ],
       "options": {
         "typecheck": {

@@ -18,14 +18,17 @@
     "target": "es2022",
     "customConditions": ["development"],
     "paths": {
-      "@boilerplate/messages-domain": [
-        "libs/messages/messages-domain/src/index.ts"
-      ],
       "@boilerplate/messages-application": [
         "libs/messages/messages-application/src/index.ts"
       ],
+      "@boilerplate/messages-domain": [
+        "libs/messages/messages-domain/src/index.ts"
+      ],
       "@boilerplate/messages-infra": [
         "libs/messages/messages-infra/src/index.ts"
+      ],
+      "@boilerplate/infra": [
+        "libs/shared/infra/src/index.ts"
       ]
     }
   }
