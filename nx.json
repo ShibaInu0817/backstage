@@ -32,7 +32,10 @@
         "libs/messages/messages-domain/*",
         "libs/messages/messages-application/*",
         "libs/messages/messages-infra/*",
-        "libs/shared/infra/*"
+        "libs/shared/infra/*",
+        "libs/shared/http/*",
+        "libs/shared/domain/*",
+        "libs/shared/application/*"
       ]
     },
     {
@@ -65,7 +68,10 @@
         "libs/messages/messages-domain/*",
         "libs/messages/messages-application/*",
         "libs/messages/messages-infra/*",
-        "libs/shared/infra/*"
+        "libs/shared/infra/*",
+        "libs/shared/http/*",
+        "libs/shared/domain/*",
+        "libs/shared/application/*"
       ],
       "options": {
         "typecheck": {

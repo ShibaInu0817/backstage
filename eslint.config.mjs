@@ -25,7 +25,7 @@ export default [
                   depConstraints: [
                     { sourceTag: "layer:domain", onlyDependOnLibsWithTags: ["layer:domain"] },
                     { sourceTag: "layer:application", onlyDependOnLibsWithTags: ["layer:domain", "layer:application"] },
-                    { sourceTag: "layer:infra", onlyDependOnLibsWithTags: ["layer:domain", "layer:infra"] },
+                    { sourceTag: "layer:infra", onlyDependOnLibsWithTags: ["layer:domain", "layer:infra", "layer:application"] },
                     // Apps can depend on anything (they are the composition root)
                     { sourceTag: "type:app", onlyDependOnLibsWithTags: ["layer:domain", "layer:application", "layer:infra"] }
                   ]

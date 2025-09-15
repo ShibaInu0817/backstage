@@ -1,12 +1,5 @@
-import {
-  Controller,
-  Get,
-  Logger,
-  NotFoundException,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Logger, Param } from '@nestjs/common';
 import { GetMessageUseCase } from './use-case';
-import { MessageNotFoundError } from '@boilerplate/messages-domain';
 
 @Controller({ path: 'message', version: ['1'] })
 export class GetMessageController {
@@ -18,18 +11,6 @@ export class GetMessageController {
     this.logger.debug(`Getting message with id ${id}`);
     const result = await this.getMessageUseCase.execute({ id });
 
-    if (!result.ok) {
-      if (result.error instanceof MessageNotFoundError) {
-        throw new NotFoundException('Message not found');
-      }
-      throw result.error;
-    }
-
-    return {
-      ok: true,
-      data: {
-        message: result.value,
-      },
-    };
+    return result;
   }
 }

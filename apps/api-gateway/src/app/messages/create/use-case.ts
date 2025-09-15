@@ -5,6 +5,7 @@ import {
 } from '@boilerplate/messages-domain';
 import { ObjectId } from 'mongodb';
 import { Injectable, Inject } from '@nestjs/common';
+import { ApplicationError } from '@boilerplate/application';
 
 interface CreateMessageDto {
   tenantId: string;
@@ -12,6 +13,14 @@ interface CreateMessageDto {
   senderId: string;
   content: string;
   metadata?: Record<string, any>;
+}
+
+export class SaveMessageFailedError extends ApplicationError {
+  readonly code = 'SAVE_MESSAGE_FAILED';
+
+  constructor(reason: string) {
+    super(`Failed to save message: ${reason}`);
+  }
 }
 
 @Injectable()
@@ -32,7 +41,11 @@ export class CreateMessageUseCase {
       metadata: dto.metadata,
     });
 
-    // 👇 Repo handles persistence (will return a hydrated entity)
-    return this.messageRepository.create(newMessage);
+    try {
+      return await this.messageRepository.create(newMessage);
+    } catch (err: any) {
+      // Repository threw an infra error (DB-level)
+      throw new SaveMessageFailedError(err.message); // wrap into application error
+    }
   }
 }

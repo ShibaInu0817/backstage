@@ -6,12 +6,16 @@ export class CreateMessageController {
   constructor(private readonly createMessageUseCase: CreateMessageUseCase) {}
 
   @Post()
-  getData() {
-    return this.createMessageUseCase.execute({
+  async getData() {
+    const message = await this.createMessageUseCase.execute({
       content: 'Hello, world!',
       senderId: '1',
       tenantId: '1',
       conversationId: '1',
     });
+
+    return {
+      message,
+    };
   }
 }

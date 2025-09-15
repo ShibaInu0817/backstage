@@ -20,6 +20,15 @@
     },
     {
       "path": "./apps/api-gateway"
+    },
+    {
+      "path": "./libs/shared/http"
+    },
+    {
+      "path": "./libs/shared/domain"
+    },
+    {
+      "path": "./libs/shared/application"
     }
   ]
 }

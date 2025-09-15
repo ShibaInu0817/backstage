@@ -17,25 +17,13 @@ export class GetMessageUseCase {
     private readonly messageRepository: IMessageRepository
   ) {}
 
-  async execute(dto: GetMessageDto): Promise<Result<MessageEntity, Error>> {
+  async execute(dto: GetMessageDto): Promise<MessageEntity> {
     const message = await this.messageRepository.findById(dto.id);
 
     if (!message) {
-      return Err(new MessageNotFoundError(dto.id));
+      throw new MessageNotFoundError(dto.id);
     }
-    return Ok(message);
+
+    return message;
   }
-}
-
-// TODO: Move to shared/common
-export type Result<T, E extends Error> =
-  | { ok: true; value: T }
-  | { ok: false; error: E };
-
-export function Ok<T>(value: T): Result<T, Error> {
-  return { ok: true, value };
-}
-
-export function Err<E extends Error>(error: E): Result<never, E> {
-  return { ok: false, error };
 }
