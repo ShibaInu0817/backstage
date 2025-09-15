@@ -3,8 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MessageRepository } from './repositories/message/repository';
 import { MessageDo, MessageSchema } from './repositories/message/schema';
 import { SampleTemplateMongodbModule } from '@boilerplate/infra';
-// Dependency Injection Token for Repository Interface
-export const MESSAGE_REPOSITORY_TOKEN = 'IMessageRepository';
+import { MESSAGE_REPOSITORY_TOKEN } from '@boilerplate/messages-domain';
 
 @Module({
   imports: [

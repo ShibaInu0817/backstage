@@ -19,6 +19,9 @@
   "references": [
     {
       "path": "../messages-domain/tsconfig.lib.json"
+    },
+    {
+      "path": "../../shared/infra/tsconfig.lib.json"
     }
   ]
 }

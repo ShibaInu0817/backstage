@@ -23,10 +23,13 @@ export default [
                   enforceBuildableLibDependency: true,
                   allow: ["^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"],
                   depConstraints: [
+                    { sourceTag: "layer:domain", onlyDependOnLibsWithTags: ["layer:domain"] },
                     { sourceTag: "layer:application", onlyDependOnLibsWithTags: ["layer:domain", "layer:application"] },
-                    { sourceTag: "layer:infra", onlyDependOnLibsWithTags: ["layer:domain", "layer:application", "layer:infra"] },
-                    { sourceTag: "layer:domain", onlyDependOnLibsWithTags: ["layer:domain"] }
+                    { sourceTag: "layer:infra", onlyDependOnLibsWithTags: ["layer:domain", "layer:infra"] },
+                    // Apps can depend on anything (they are the composition root)
+                    { sourceTag: "type:app", onlyDependOnLibsWithTags: ["layer:domain", "layer:application", "layer:infra"] }
                   ]
+
                 }
             ]
         }

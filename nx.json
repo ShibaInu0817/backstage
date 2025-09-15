@@ -14,26 +14,6 @@
     ],
     "sharedGlobals": []
   },
-  "lint": {
-    "rules": [
-      {
-        "sourceTag": "layer:application",
-        "onlyDependOnLibsWithTags": ["layer:domain", "layer:application"]
-      },
-      {
-        "sourceTag": "layer:infra",
-        "onlyDependOnLibsWithTags": [
-          "layer:domain",
-          "layer:application",
-          "layer:infra"
-        ]
-      },
-      {
-        "sourceTag": "layer:domain",
-        "onlyDependOnLibsWithTags": ["layer:domain"]
-      }
-    ]
-  },
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
@@ -77,7 +57,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/boilerplate-e2e/**/*"]
+      "exclude": ["apps/boilerplate-e2e/**/*", "apps/api-gateway-e2e/**/*"]
     },
     {
       "plugin": "@nx/js/typescript",

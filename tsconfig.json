@@ -4,12 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/boilerplate-e2e"
-    },
-    {
-      "path": "./apps/boilerplate"
-    },
-    {
       "path": "./libs/messages/messages-domain"
     },
     {
@@ -20,6 +14,12 @@
     },
     {
       "path": "./libs/shared/infra"
+    },
+    {
+      "path": "./apps/api-gateway-e2e"
+    },
+    {
+      "path": "./apps/api-gateway"
     }
   ]
 }
