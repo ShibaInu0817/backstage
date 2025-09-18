@@ -3,7 +3,7 @@ services:
     name: backstage-portal
     env: docker
     plan: free
-    dockerfilePath: ./backstage/Dockerfile
+    dockerfilePath: ./Dockerfile   # root Dockerfile for Backstage
     envVars:
       - key: NODE_ENV
         value: production

@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+
+  backstage-portal:
+    build:
+      context: .
+      dockerfile: ./Dockerfile   # root-level Dockerfile for Backstage
+    container_name: backstage-portal
+    ports:
+      - "7007:7007"
+    environment:
+      NODE_ENV: development
+      PORT: 7007
