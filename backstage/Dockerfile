@@ -3,18 +3,17 @@ FROM node:18-bullseye-slim AS builder
 
 WORKDIR /app
 
-# Copy root files (monorepo deps)
-COPY package.json yarn.lock ./
+# Copy only package files first (for caching)
+COPY package.json package-lock.json ./
 
-# Copy monorepo code (important for workspace deps)
+# Install deps
+RUN npm ci --omit=dev
+
+# Copy all Backstage source code
 COPY . .
 
-# Move into backstage app
-WORKDIR /app/apps/backstage
-
-# Install dependencies and build
-RUN yarn install --frozen-lockfile --ignore-engines
-RUN yarn tsc && yarn build
+# Build Backstage
+RUN npm run build
 
 # Stage 2: Run Backstage
 FROM node:18-bullseye-slim
@@ -22,7 +21,8 @@ FROM node:18-bullseye-slim
 WORKDIR /app
 
 # Copy built app from builder
-COPY --from=builder /app/apps/backstage ./
+COPY --from=builder /app ./
 
 EXPOSE 7007
+
 CMD ["node", "packages/backend", "--config", "app-config.yaml"]

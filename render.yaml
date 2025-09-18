@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: backstage-hello
+    name: backstage-portal
     env: docker
     plan: free
-    dockerfilePath: ./apps/backstage/Dockerfile
+    dockerfilePath: ./backstage/Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
