@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: backstage-hello
+    env: docker
+    plan: free
+    dockerfilePath: ./apps/backstage/Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 7007
