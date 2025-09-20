@@ -1,38 +1,33 @@
-# Stage 1: Build api-gateway
+# Stage 1: Build API Gateway (NestJS with Nx)
 FROM node:20-bullseye-slim AS builder
 
 WORKDIR /app
 
-# Copy root package.json and lock file (so nx is available)
+# Copy root files Nx needs
 COPY package*.json ./
 COPY nx.json ./
 COPY tsconfig.base.json ./
-COPY angular.json ./
-COPY workspace.json ./
 
-# Copy all source (needed for Nx build graph)
+# Copy all source (apps + libs)
 COPY . .
 
-# Install deps (workspace-wide)
+# Install dependencies
 RUN npm install
 
-# Run Nx build for api-gateway using npx
+# Run Nx build for api-gateway
 RUN npx nx build @boilerplate/api-gateway --configuration=production
 
-# Stage 2: Run api-gateway
+# Stage 2: Run API Gateway
 FROM node:20-bullseye-slim
 
 WORKDIR /app
 
-# Copy built dist from builder
-COPY --from=builder /app/dist/apps/api-gateway ./dist
+# Copy built dist from builder (Nx outputs to apps/api-gateway/dist)
+COPY --from=builder /app/apps/api-gateway/dist ./dist
 
-# Copy only package.json (dist may have its own pruned package.json if using Nx prune)
-COPY --from=builder /app/apps/api-gateway/package.json ./package.json
-
-# Install only production deps
-RUN npm install --omit=dev
+# Install production dependencies inside the dist directory using the generated package.json
+WORKDIR /app/dist
+RUN npm install --omit=dev --no-audit --no-fund
 
 EXPOSE 3000
-
-CMD ["node", "dist/main.js"]
+CMD ["node", "main.js"]
