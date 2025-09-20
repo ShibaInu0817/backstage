@@ -4,7 +4,7 @@ services:
     name: backstage-portal
     env: docker
     plan: free         # or starter/standard depending on your needs
-    region: oregon
+    region: singapore
     dockerfilePath: ./backstage/Dockerfile
     autoDeploy: true
     envVars:
@@ -36,7 +36,7 @@ services:
     name: api-gateway
     env: docker
     plan: free
-    region: oregon
+    region: singapore
     dockerfilePath: ./apps/api-gateway/Dockerfile
     autoDeploy: true
     envVars:
@@ -52,6 +52,6 @@ services:
 databases:
   - name: backstage-db
     plan: free
-    region: oregon
+    region: singapore
     databaseName: backstage
     user: backstage
