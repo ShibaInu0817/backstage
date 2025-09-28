@@ -16,10 +16,12 @@ RUN apt-get update \
 # Copy the full workspace so that workspaces are available during install
 COPY . .
 
+# Change to backstage directory for all subsequent operations
+WORKDIR /app/backstage
+
 # Install deps and build backend bundle
 RUN yarn install --immutable
 RUN yarn tsc
-WORKDIR /app/backstage
 RUN yarn build:backend
 
 # Stage 2: Run Backstage backend
