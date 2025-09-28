@@ -19,6 +19,7 @@ COPY . .
 # Install deps and build backend bundle
 RUN yarn install --immutable
 RUN yarn tsc
+WORKDIR /app/backstage
 RUN yarn build:backend
 
 # Stage 2: Run Backstage backend
@@ -35,20 +36,20 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy workspace files required by Yarn and Backstage
-COPY --from=builder /app/.yarn ./.yarn
-COPY --from=builder /app/.yarnrc.yml ./.yarnrc.yml
-COPY --from=builder /app/backstage.json ./backstage.json
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/yarn.lock ./yarn.lock
+COPY --from=builder /app/backstage/.yarn ./.yarn
+COPY --from=builder /app/backstage/.yarnrc.yml ./.yarnrc.yml
+COPY --from=builder /app/backstage/backstage.json ./backstage.json
+COPY --from=builder /app/backstage/package.json ./package.json
+COPY --from=builder /app/backstage/yarn.lock ./yarn.lock
 
 # Prepare production workspace from skeleton
-COPY --from=builder /app/packages/backend/dist/skeleton.tar.gz ./
+COPY --from=builder /app/backstage/packages/backend/dist/skeleton.tar.gz ./
 RUN tar xzf skeleton.tar.gz && rm skeleton.tar.gz
 RUN yarn workspaces focus --all --production && rm -rf "$(yarn cache clean)"
 
 # Copy configs and backend bundle
-COPY --from=builder /app/app-config*.yaml ./
-COPY --from=builder /app/packages/backend/dist/bundle.tar.gz ./
+COPY --from=builder /app/backstage/app-config*.yaml ./
+COPY --from=builder /app/backstage/packages/backend/dist/bundle.tar.gz ./
 RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
 
 EXPOSE 7007
