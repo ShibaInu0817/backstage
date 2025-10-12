@@ -1,17 +1,19 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateMessageUseCase } from './use-case';
+import { CreateMessageDto } from './dto';
 
 @Controller({ path: 'message', version: ['1'] })
 export class CreateMessageController {
   constructor(private readonly createMessageUseCase: CreateMessageUseCase) {}
 
   @Post()
-  async getData() {
+  async createMessage(@Body() body: CreateMessageDto) {
     const message = await this.createMessageUseCase.execute({
-      content: 'Hello, world!',
-      senderId: '1',
-      tenantId: '1',
-      conversationId: '1',
+      content: body.content,
+      senderId: body.senderId,
+      tenantId: body.tenantId,
+      conversationId: body.conversationId,
+      metadata: body.metadata,
     });
 
     return {
