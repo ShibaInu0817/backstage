@@ -1,0 +1,449 @@
+# Project Rules and Conventions
+
+This document outlines the architectural decisions, conventions, and best practices for this project. All code should follow these rules to maintain consistency and quality.
+
+## Table of Contents
+
+1. [Module Organization](#module-organization)
+2. [Folder Structure](#folder-structure)
+3. [File Naming Conventions](#file-naming-conventions)
+4. [Architecture Layers](#architecture-layers)
+5. [TypeScript Configuration](#typescript-configuration)
+6. [API Endpoint Design](#api-endpoint-design)
+
+---
+
+## Module Organization
+
+### Rule: Each Feature Has Its Own Module
+
+Each distinct feature or operation should have its own dedicated module in a separate folder.
+
+**DO:**
+```
+messages/
+  ├── get/
+  │   ├── module.ts          # GetMessageModule
+  │   ├── controller.ts
+  │   └── use-case.ts
+  ├── list/
+  │   ├── module.ts          # ListMessagesModule
+  │   ├── controller.ts
+  │   └── use-case.ts
+  ├── create/
+  │   ├── module.ts          # CreateMessageModule
+  │   ├── controller.ts
+  │   └── use-case.ts
+  └── module.ts              # MessageModule (parent)
+```
+
+**DON'T:**
+```
+messages/
+  ├── get/
+  │   ├── get-controller.ts
+  │   ├── list-controller.ts  # ❌ List should be in its own folder
+  │   └── module.ts
+```
+
+### Reasoning
+
+- **Separation of Concerns**: Each operation (get, list, create, update, delete) is independent
+- **Maintainability**: Easier to locate and modify specific features
+- **Scalability**: New features can be added without affecting existing ones
+- **Testability**: Each module can be tested in isolation
+
+---
+
+## Folder Structure
+
+### API Gateway Structure
+
+```
+apps/api-gateway/src/app/
+  └── {resource}/
+      ├── {operation}/
+      │   ├── module.ts
+      │   ├── controller.ts
+      │   ├── use-case.ts
+      │   ├── dto.ts (or query.dto.ts for query params)
+      │   ├── use-case.spec.ts
+      │   └── README.md (optional, for complex features)
+      └── module.ts (parent module)
+```
+
+### Library Structure
+
+```
+libs/
+  └── {domain}/
+      ├── {domain}-domain/
+      │   └── src/
+      │       └── lib/
+      │           └── entities/
+      ├── {domain}-application/
+      │   └── src/
+      │       └── lib/
+      ├── {domain}-infra/
+      │   └── src/
+      │       └── lib/
+      │           └── repositories/
+```
+
+---
+
+## File Naming Conventions
+
+### Standard File Names
+
+Each feature folder should use consistent file naming:
+
+| File Type | Name | Example |
+|-----------|------|---------|
+| Module | `module.ts` | `list/module.ts` |
+| Controller | `controller.ts` | `list/controller.ts` |
+| Use Case | `use-case.ts` | `list/use-case.ts` |
+| DTO (Body) | `dto.ts` | `create/dto.ts` |
+| DTO (Query) | `query.dto.ts` | `list/query.dto.ts` |
+| Tests | `use-case.spec.ts`, `controller.spec.ts` | `list/use-case.spec.ts` |
+| Documentation | `README.md` | `list/README.md` |
+
+### Naming Convention Rules
+
+**DO:**
+- Use `controller.ts` (not `list-controller.ts`) inside `list/` folder
+- Use `use-case.ts` (not `list-use-case.ts`) inside `list/` folder
+- Use `dto.ts` or `query.dto.ts` depending on context
+- Keep file names simple and generic within their folder
+
+**DON'T:**
+- Don't prefix files with the folder name (e.g., `list-controller.ts`)
+- Don't use inconsistent naming across similar features
+- Don't mix singular and plural names arbitrarily
+
+### Class Naming
+
+Classes should be descriptive and include the operation:
+
+```typescript
+// ✅ GOOD
+export class ListMessagesController { }
+export class ListMessagesUseCase { }
+export class ListMessagesQueryDto { }
+
+// ❌ BAD (too generic)
+export class MessagesController { }
+export class UseCase { }
+```
+
+---
+
+## Architecture Layers
+
+### Clean Architecture Layers
+
+The project follows clean architecture with clear separation:
+
+```
+┌─────────────────────────────────────────────┐
+│  Presentation Layer (apps/api-gateway)      │
+│  - Controllers                               │
+│  - DTOs                                      │
+│  - Request/Response mapping                  │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│  Application Layer (libs/{domain}-app)      │
+│  - Use Cases                                 │
+│  - Application Services                      │
+│  - Business Logic Orchestration              │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│  Domain Layer (libs/{domain}-domain)        │
+│  - Entities                                  │
+│  - Repository Interfaces                     │
+│  - Domain Logic                              │
+│  - Domain Exceptions                         │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│  Infrastructure Layer (libs/{domain}-infra) │
+│  - Repository Implementations                │
+│  - Database Schemas                          │
+│  - External Service Adapters                 │
+└─────────────────────────────────────────────┘
+```
+
+### Dependency Rule
+
+- **Outer layers depend on inner layers**
+- **Inner layers should not depend on outer layers**
+- Domain layer has no dependencies on other layers
+- Infrastructure implements interfaces defined in domain
+
+---
+
+## TypeScript Configuration
+
+### Build Artifacts
+
+The project does NOT use TypeScript incremental compilation.
+
+**Files to Ignore:**
+
+Add the following to `.gitignore`:
+
+```gitignore
+# TypeScript build info
+*.tsbuildinfo
+```
+
+**Reasoning:**
+- Build artifacts are environment-specific
+- Not necessary for the current project setup
+- Reduces repository clutter
+- Each developer generates their own build artifacts
+
+---
+
+## API Endpoint Design
+
+### RESTful Conventions
+
+Follow RESTful principles for API design:
+
+| Operation | HTTP Method | Path | Folder |
+|-----------|-------------|------|--------|
+| List resources | GET | `/v1/messages` | `list/` |
+| Get single resource | GET | `/v1/message/:id` | `get/` |
+| Create resource | POST | `/v1/message` | `create/` |
+| Update resource | PUT/PATCH | `/v1/message/:id` | `update/` |
+| Delete resource | DELETE | `/v1/message/:id` | `delete/` |
+
+### Controller Organization
+
+- Each operation gets its own controller in a dedicated folder
+- Controllers should be thin - delegate to use cases
+- Use appropriate HTTP methods and status codes
+- Include Swagger documentation decorators
+
+### Example Controller
+
+```typescript
+@ApiTags('messages')
+@Controller({ path: 'messages', version: ['1'] })
+export class ListMessagesController {
+  private readonly logger = new Logger(ListMessagesController.name);
+
+  constructor(private readonly listMessagesUseCase: ListMessagesUseCase) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List messages by conversation ID' })
+  @ApiResponse({ status: 200, description: 'Messages retrieved successfully' })
+  async listMessages(@Query() query: ListMessagesQueryDto) {
+    return await this.listMessagesUseCase.execute(query);
+  }
+}
+```
+
+### Use Case Organization
+
+- One use case per file
+- Use cases should be focused on a single operation
+- Use cases orchestrate domain logic, don't implement it
+- Use cases should not depend on HTTP concepts
+
+### Example Use Case
+
+```typescript
+@Injectable()
+export class ListMessagesUseCase {
+  constructor(
+    @Inject(MESSAGE_REPOSITORY_TOKEN)
+    private readonly messageRepository: IMessageRepository
+  ) {}
+
+  async execute(dto: ListMessagesDto): Promise<PaginatedResult<MessageEntity>> {
+    return await this.messageRepository.findByConversationId(filter, options);
+  }
+}
+```
+
+---
+
+## Pagination Best Practices
+
+### Pagination Strategy
+
+Choose the appropriate pagination strategy based on use case:
+
+#### 1. Cursor-Based Pagination (Recommended for Lists/Feeds)
+
+**When to use:**
+- Infinite scroll UIs
+- Chat/messaging interfaces
+- Social media feeds
+- Any list with continuous scrolling
+- Real-time data that changes frequently
+
+**Query Parameters:**
+- `cursor`: Base64-encoded cursor (optional)
+- `limit`: Items to return (default: 20, min: 1, max: 100)
+- `sortBy`: Field to sort by (default: timestamp)
+- `sortOrder`: Sort direction (asc/desc, default: desc)
+
+**Response Format:**
+```typescript
+{
+  data: [...],
+  pagination: {
+    limit: 20,
+    hasMore: true,
+    nextCursor: "eyJ0aW1lc3RhbXAi...",
+    previousCursor: null
+  }
+}
+```
+
+**Implementation:**
+- Define CursorPaginationOptions and CursorPaginatedResult in domain layer
+- Use limit + 1 pattern to determine hasMore
+- Encode cursor as base64 JSON: `{sortField: value, _id: id}`
+- Build compound query: `{field: {$lt: value}} OR {field: value, _id: {$lt: id}}`
+
+**Advantages:**
+- O(1) performance regardless of dataset size
+- No expensive skip operations
+- Consistent results when data changes
+- Perfect for infinite scroll
+
+#### 2. Offset-Based Pagination (For Page Navigation)
+
+**When to use:**
+- Page number navigation required
+- Need total count/total pages
+- Random access to specific pages
+- Administrative interfaces
+
+**Query Parameters:**
+- `page`: Current page number (default: 1, min: 1)
+- `limit`: Items per page (default: 20, min: 1, max: 100)
+- `sortBy`: Field to sort by (default: timestamp)
+- `sortOrder`: Sort direction (asc/desc, default: desc)
+
+**Response Format:**
+```typescript
+{
+  data: [...],
+  pagination: {
+    page: 1,
+    limit: 20,
+    total: 150,
+    totalPages: 8,
+    hasNextPage: true,
+    hasPrevPage: false
+  }
+}
+```
+
+**Implementation:**
+- Define PaginationOptions and PaginatedResult in domain layer
+- Use skip/limit for queries
+- Execute parallel queries for data and count
+- Calculate metadata (totalPages, hasNextPage, etc.)
+
+**Disadvantages:**
+- Skip operations become slow with large offsets
+- Inconsistent results when data changes during pagination
+- Not suitable for real-time feeds
+
+### Implementation Guidelines
+
+1. **Define interfaces in domain layer:**
+   - Keep pagination logic separate from business logic
+   - Export interfaces for reuse across features
+
+2. **Implement at repository level:**
+   - Keep implementation details in infrastructure layer
+   - Return typed results
+
+3. **Use in controllers:**
+   - Validate query parameters with DTOs
+   - Document with Swagger decorators
+
+---
+
+## Testing Conventions
+
+### Test File Organization
+
+- Test files should be colocated with the files they test
+- Use `.spec.ts` suffix for test files
+- Name pattern: `{filename}.spec.ts`
+
+### Test Structure
+
+```typescript
+describe('ListMessagesUseCase', () => {
+  let useCase: ListMessagesUseCase;
+  let mockRepository: jest.Mocked<IMessageRepository>;
+
+  beforeEach(async () => {
+    // Setup
+  });
+
+  describe('execute', () => {
+    it('should return paginated messages', async () => {
+      // Arrange, Act, Assert
+    });
+  });
+});
+```
+
+---
+
+## Documentation
+
+### When to Add README
+
+Add a `README.md` file to a feature folder when:
+
+- The feature is complex or has multiple use cases
+- The API has specific usage patterns or requirements
+- There are important performance considerations
+- The feature requires special setup or configuration
+
+### README Template
+
+```markdown
+# Feature Name
+
+## Overview
+Brief description of the feature
+
+## API Endpoint
+Endpoint details
+
+## Usage Examples
+Code examples
+
+## Implementation Details
+Technical details
+
+## Performance Considerations
+Important notes about performance
+```
+
+---
+
+## Summary
+
+These rules ensure:
+- **Consistency** across the codebase
+- **Maintainability** for future developers
+- **Scalability** as the project grows
+- **Quality** through standardized patterns
+
+All new code should follow these conventions. When in doubt, refer to existing implementations that follow these rules as examples.
+
