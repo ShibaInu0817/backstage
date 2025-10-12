@@ -1,0 +1,57 @@
+services:
+  # Backstage portal
+  - type: web
+    name: backstage-portal
+    env: docker
+    plan: free         # or starter/standard depending on your needs
+    region: singapore
+    dockerfilePath: ./backstage/Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: backstage-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: backstage-db
+          property: port
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: backstage-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: backstage-db
+          property: password
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: backstage-db
+          property: database
+
+  # API Gateway (NestJS)
+  - type: web
+    name: api-gateway
+    env: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./apps/api-gateway/Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SAMPLE_TEMPLATE_MONGODB_HOSTS
+        sync: false   # you’ll paste your Atlas URI in Render dashboard
+      - key: SAMPLE_TEMPLATE_MONGODB_REPLICA_SET
+        sync: false
+      - key: SAMPLE_TEMPLATE_MONGODB_DB_NAME
+        value: boilerplate
+
+databases:
+  - name: backstage-db
+    plan: free
+    region: singapore
+    databaseName: backstage
+    user: backstage

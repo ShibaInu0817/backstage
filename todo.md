@@ -2,3 +2,20 @@ Tips:
 
 1. Use Case should decide what error to be thrown, either domain or application error. 
 2. Infra error should be wrapped into application error.
+
+
+TODO:
+1. Add swagger
+2. Backstage auth - https://backstage.io/docs/getting-started/config/authentication/
+3. Add List and pagination sample
+4. Add message queue and command processor
+5. Add CQRS pattern - https://chatgpt.com/share/68d0a69a-21c8-8006-9c46-c80a57152d13
+6. Add test for repository pattern
+7. Add prompt or full document for the flows
+
+
+What had been done:
+1. Setup backstage portal and docker for app
+2. Response handling and exception filter using `HttpModule`
+3. Repository pattern
+
