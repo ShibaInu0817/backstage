@@ -1,5 +1,6 @@
 import { Controller, Get, Logger, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SortOrder } from '@boilerplate/messages-domain';
 import { ListMessagesUseCase } from './use-case';
 import { ListMessagesQueryDto } from './query.dto';
 
@@ -43,7 +44,7 @@ export class ListMessagesController {
       cursor: query.cursor,
       limit: query.limit ?? 20,
       sortBy: query.sortBy ?? 'timestamp',
-      sortOrder: query.sortOrder,
+      sortOrder: query.sortOrder ?? SortOrder.DESC,
     });
 
     return result;
