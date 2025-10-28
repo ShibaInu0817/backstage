@@ -1,20 +1,23 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateMessageUseCase } from './use-case';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateMessageCommand } from '@boilerplate/messages-application';
 import { CreateMessageDto } from './dto';
 
 @Controller({ path: 'message', version: ['1'] })
 export class CreateMessageController {
-  constructor(private readonly createMessageUseCase: CreateMessageUseCase) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Post()
   async createMessage(@Body() body: CreateMessageDto) {
-    const message = await this.createMessageUseCase.execute({
-      content: body.content,
-      senderId: body.senderId,
-      tenantId: body.tenantId,
-      conversationId: body.conversationId,
-      metadata: body.metadata,
-    });
+    const command = new CreateMessageCommand(
+      body.tenantId,
+      body.conversationId,
+      body.senderId,
+      body.content,
+      body.metadata
+    );
+
+    const message = await this.commandBus.execute(command);
 
     return {
       message,

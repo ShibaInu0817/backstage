@@ -14,7 +14,11 @@
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "../../../apps/api-gateway/src/app/message-command-handler/create/create-message.handler.ts",
+    "../../../apps/api-gateway/src/app/message-command-handler/errors.ts"
+  ],
   "references": [],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

@@ -1,0 +1,275 @@
+---
+alwaysApply: true
+---
+
+
+## 🧭 High-Level Cursor Rule — “Command → Outbox → CDC → Kafka → Event Processor → Read DB”
+
+```
+[API / Controller]
+      ↓
+[Command]
+      ↓
+[CommandHandler]
+ ├── Validate business logic
+ ├── Write domain data (Mongo)
+ └── Write outbox record (same Tx)
+      ↓
+[Change Stream / CDC listener]
+ └── Publish to Kafka topic
+      ↓
+[Event Processor]
+ ├── Deduplicate by eventId
+ ├── Transform / Project
+ └── Update Read DB (ElasticSearch, Redis, etc.)
+```
+
+Everything below follows this single rule.
+
+---
+
+## 🧱 1️⃣ Write-Side Flow
+
+### Command Handler pattern
+
+**Rule:** every mutating API must be modeled as a `Command` handled by a `CommandHandler`.
+
+```ts
+@CommandHandler(CreateProductCommand)
+export class CreateProductHandler {
+  constructor(
+    private readonly productRepo: ProductRepository,
+    private readonly outboxRepo: OutboxRepository,
+    @InjectConnection() private readonly connection: Connection,
+  ) {}
+
+  async execute(command: CreateProductCommand) {
+    const session = await this.connection.startSession();
+    await session.withTransaction(async () => {
+      const product = await this.productRepo.create(command.data, { session });
+
+      const eventId = `product:${product._id}:v1`;
+      await this.outboxRepo.insert({
+        eventId,
+        aggregateId: product._id,
+        eventType: 'ProductCreated',
+        payload: product,
+        createdAt: new Date(),
+        status: 'PENDING',
+      }, { session });
+    });
+  }
+}
+```
+
+✅ **Rule enforcement**
+
+* All writes go through Commands.
+* Each command must end with a write to both the business collection and `outbox`.
+* `eventId` must be deterministic (`aggregateId:version`).
+
+---
+
+## ⚙️ 2️⃣ Outbox Collection Schema
+
+```ts
+@Schema()
+export class Outbox {
+  @Prop({ required: true }) eventId: string;
+  @Prop({ required: true }) aggregateId: string;
+  @Prop({ required: true }) eventType: string;
+  @Prop({ type: mongoose.Schema.Types.Mixed }) payload: any;
+  @Prop({ default: 'PENDING' }) status: 'PENDING' | 'SENT';
+  @Prop({ default: Date.now }) createdAt: Date;
+  @Prop() sentAt?: Date;
+}
+```
+
+✅ **Rule enforcement**
+
+* One `outbox` collection shared across bounded contexts.
+* Always written in the same transaction as business data.
+
+---
+
+## 🔥 3️⃣ CDC / Change-Stream Publisher
+
+**Rule:** only the CDC process publishes to Kafka — never the handler.
+
+```ts
+@Injectable()
+export class OutboxCDCService implements OnModuleInit {
+  constructor(
+    private readonly kafkaService: KafkaService,
+    @InjectModel(Outbox.name) private readonly outboxModel: Model<Outbox>,
+  ) {}
+
+  async onModuleInit() {
+    const stream = this.outboxModel.watch([{ $match: { operationType: 'insert' } }]);
+    stream.on('change', async (change) => {
+      const doc = change.fullDocument;
+      try {
+        await this.kafkaService.producer.send({
+          topic: `${doc.eventType.toLowerCase()}-topic`,
+          messages: [{
+            key: doc.aggregateId.toString(),
+            value: JSON.stringify({
+              eventId: doc.eventId,
+              eventType: doc.eventType,
+              payload: doc.payload,
+              createdAt: doc.createdAt,
+            }),
+          }],
+        });
+
+        await this.outboxModel.updateOne({ _id: doc._id }, {
+          $set: { status: 'SENT', sentAt: new Date() },
+        });
+      } catch (err) {
+        console.error('Kafka publish failed', err);
+      }
+    });
+  }
+}
+```
+
+✅ **Rule enforcement**
+
+* Never publish directly in command handlers.
+* Use MongoDB Change Streams or CDC (Debezium) as single publisher source.
+* Retry and mark state transitions (`PENDING` → `SENT`).
+
+---
+
+## 🚚 4️⃣ Kafka Event Processor (Read-Side Flow)
+
+**Rule:** consumers must be idempotent.
+
+```ts
+@KafkaListener('productcreated-topic')
+export class ProductEventProcessor {
+  constructor(
+    private readonly processedRepo: ProcessedEventRepository,
+    private readonly elastic: ElasticService,
+  ) {}
+
+  async handleMessage({ message }: EachMessagePayload) {
+    const event = JSON.parse(message.value.toString());
+    const { eventId, payload } = event;
+
+    const exists = await this.processedRepo.findOne({ eventId });
+    if (exists) return; // ignore duplicate
+
+    await this.elastic.index('products', payload._id, payload);
+    await this.processedRepo.insert({ eventId, processedAt: new Date() });
+  }
+}
+```
+
+✅ **Rule enforcement**
+
+* Every processor must:
+
+  1. Check `processed_events` for `eventId`.
+  2. Execute projection logic (update Elastic/read DB).
+  3. Mark as processed.
+
+---
+
+## 🧠 5️⃣ Consumer Dedup Store
+
+`processed_events` schema:
+
+```ts
+@Schema({ collection: 'processed_events' })
+export class ProcessedEvent {
+  @Prop({ unique: true }) eventId: string;
+  @Prop({ default: Date.now }) processedAt: Date;
+}
+```
+
+Or Redis alternative:
+
+```ts
+if (await redis.exists(eventId)) return;
+await redis.set(eventId, 1, 'EX', 86400);
+```
+
+---
+
+## 💾 6️⃣ Read DB Updater (Projection)
+
+Each event updates or rebuilds read-side models:
+
+```ts
+@Injectable()
+export class ElasticService {
+  async index(index: string, id: string, doc: any) {
+    await this.client.index({ index, id, document: doc });
+  }
+}
+```
+
+✅ **Rule enforcement**
+
+* Consumers must project into a dedicated read model (Elastic, Redis, etc.).
+* No command-side writes inside processors.
+
+---
+
+## 🔄 7️⃣ Error Handling & Recovery Rules
+
+| Component           | Recovery Strategy                                             |
+| ------------------- | ------------------------------------------------------------- |
+| **Command Handler** | Retry Mongo transaction on transient error                    |
+| **CDC Publisher**   | Detect unsent outbox (`status=PENDING`) on startup and resend |
+| **Kafka Consumer**  | Idempotent by eventId → safe reprocessing                     |
+| **Elastic Updater** | Retry or push to DLQ if downstream fails                      |
+
+---
+
+## 🧾 Final Cursor Rules Summary
+
+| Step | Layer                | Responsibility                   | Enforced Rule                       |
+| ---- | -------------------- | -------------------------------- | ----------------------------------- |
+| 1    | **API / Controller** | Accepts input, sends Command     | No business logic                   |
+| 2    | **Command Handler**  | Write domain + outbox atomically | Always write to `outbox` in same Tx |
+| 3    | **Outbox CDC**       | Listen for new outbox docs       | Only component allowed to publish   |
+| 4    | **Kafka Producer**   | Serialize domain event           | Include deterministic `eventId`     |
+| 5    | **Kafka Consumer**   | Handle event idempotently        | Skip processed `eventId`s           |
+| 6    | **Read DB Updater**  | Project to Elastic / cache       | Never modify command DB             |
+| 7    | **Processed Store**  | Track handled events             | Used for deduplication              |
+
+---
+
+## 🧰 8️⃣ Folder / Module Convention
+
+```
+src/
+├── common/
+│   ├── kafka/
+│   │   ├── kafka.service.ts
+│   ├── outbox/
+│   │   ├── outbox.schema.ts
+│   │   ├── outbox.cdc.service.ts
+│   │   ├── processed-event.schema.ts
+├── products/
+│   ├── commands/
+│   │   ├── create-product.command.ts
+│   │   ├── create-product.handler.ts
+│   ├── consumers/
+│   │   ├── product-created.processor.ts
+│   ├── projections/
+│   │   ├── elastic.service.ts
+```
+
+---
+
+## ✅ Result
+
+This rule guarantees:
+
+* **Atomic write side** (DB + Outbox)
+* **Eventual consistency** between DB and Kafka
+* **Exactly-once-effect** downstream via idempotency
+* **Unified developer rule** for all domains
