@@ -1,0 +1,26 @@
+{
+  "name": "@boilerplate/message-command-processor-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@boilerplate/message-command-processor"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/message-command-processor-e2e/jest.config.ts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@boilerplate/message-command-processor:build",
+          "@boilerplate/message-command-processor:serve"
+        ]
+      }
+    }
+  }
+}

@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "nx run-many --target=lint",
-    "typecheck": "nx run-many --target=typecheck"
+    "typecheck": "nx run-many --target=typecheck",
+    "start": "nx run-many --target=serve"
   },
   "private": true,
   "dependencies": {

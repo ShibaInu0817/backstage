@@ -4,6 +4,8 @@
     "outDir": "dist",
     "types": ["node"],
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "target": "es2021"
   },
   "include": ["src/**/*.ts"],
@@ -19,16 +21,16 @@
   ],
   "references": [
     {
-      "path": "../../libs/shared/application/tsconfig.lib.json"
+      "path": "../../libs/messages/messages-infra/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/messages/messages-application/tsconfig.lib.json"
     },
     {
       "path": "../../libs/messages/messages-domain/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/messages/messages-infra/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/messages/messages-application/tsconfig.lib.json"
+      "path": "../../libs/shared/application/tsconfig.lib.json"
     },
     {
       "path": "../../libs/shared/http/tsconfig.lib.json"
