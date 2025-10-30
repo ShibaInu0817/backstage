@@ -11,6 +11,8 @@ import {
   CursorPaginationOptions,
   CursorPaginatedResult,
 } from '@boilerplate/messages-domain';
+import { IUnitOfWork } from '@boilerplate/domain';
+import { MongooseUnitOfWork } from '@boilerplate/infra';
 
 interface CursorData {
   [key: string]: string | Date | number | boolean;
@@ -103,15 +105,32 @@ export class MessageRepository implements IMessageRepository {
     return docs.map(this.toEntity);
   }
 
-  async create(entity: MessageEntity): Promise<MessageEntity> {
+  async create(
+    entity: MessageEntity,
+    uow?: IUnitOfWork
+  ): Promise<MessageEntity> {
+    // Extract Mongoose session if UoW is provided
+    const session =
+      uow instanceof MongooseUnitOfWork ? uow.getSession() : undefined;
+
     const doc = new this.messageModel(this.toPersistence(entity));
-    const saved = await doc.save();
+    const saved = await doc.save({ session });
     return this.toEntity(saved);
   }
 
-  async update(entity: MessageEntity): Promise<MessageEntity> {
+  async update(
+    entity: MessageEntity,
+    uow?: IUnitOfWork
+  ): Promise<MessageEntity> {
+    // Extract Mongoose session if UoW is provided
+    const session =
+      uow instanceof MongooseUnitOfWork ? uow.getSession() : undefined;
+
     const updated = await this.messageModel
-      .findByIdAndUpdate(entity.id, this.toPersistence(entity), { new: true })
+      .findByIdAndUpdate(entity.id, this.toPersistence(entity), {
+        new: true,
+        session,
+      })
       .exec();
     if (!updated) throw new Error('Update failed');
     return this.toEntity(updated);
