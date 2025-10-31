@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   type IMessageRepository,
   MESSAGE_REPOSITORY_TOKEN,
@@ -15,6 +15,8 @@ import { SaveMessageFailedError } from './create-message.errors';
 export class CreateMessageHandler
   implements ICommandHandler<CreateMessageCommand>
 {
+  private readonly logger = new Logger(CreateMessageCommand.name);
+
   constructor(
     @Inject(MESSAGE_REPOSITORY_TOKEN)
     private readonly messageRepository: IMessageRepository,
@@ -23,7 +25,7 @@ export class CreateMessageHandler
   ) {}
 
   async execute(command: CreateMessageCommand): Promise<MessageEntity> {
-    console.log('CreateMessageHandler', command);
+    this.logger.debug('CreateMessageHandler', command);
 
     try {
       return await this.unitOfWork.executeInTransaction(async () => {

@@ -1,6 +1,8 @@
 import { Controller, Get, Logger, Param } from '@nestjs/common';
 import { GetMessageUseCase } from './use-case';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('message')
 @Controller({ path: 'message', version: ['1'] })
 export class GetMessageController {
   private readonly logger = new Logger(GetMessageController.name);

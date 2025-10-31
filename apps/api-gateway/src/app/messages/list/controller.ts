@@ -4,7 +4,7 @@ import { SortOrder } from '@boilerplate/messages-domain';
 import { ListMessagesUseCase } from './use-case';
 import { ListMessagesQueryDto } from './query.dto';
 
-@ApiTags('messages')
+@ApiTags('message')
 @Controller({ path: 'messages', version: ['1'] })
 export class ListMessagesController {
   private readonly logger = new Logger(ListMessagesController.name);
