@@ -7,8 +7,9 @@ import {
 } from '@boilerplate/messages-domain';
 import { type IUnitOfWork, UNIT_OF_WORK_TOKEN } from '@boilerplate/domain';
 import { ObjectId } from 'mongodb';
-import { CreateMessageCommand } from '@boilerplate/messages-application';
-import { SaveMessageFailedError } from './errors';
+import { CreateMessageCommand } from './create-message.command';
+import { SaveMessageFailedError } from './create-message.errors';
+
 @Injectable()
 @CommandHandler(CreateMessageCommand)
 export class CreateMessageHandler

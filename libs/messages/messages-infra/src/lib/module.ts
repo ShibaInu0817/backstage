@@ -22,9 +22,6 @@ import { MESSAGE_REPOSITORY_TOKEN } from '@boilerplate/messages-domain';
       useClass: MessageRepository,
     },
   ],
-  exports: [
-    MESSAGE_REPOSITORY_TOKEN,
-    MongooseUnitOfWorkModule, // Export so consumers get access to IUnitOfWork
-  ],
+  exports: [MESSAGE_REPOSITORY_TOKEN, MongooseUnitOfWorkModule],
 })
 export class MessageInfraModule {}

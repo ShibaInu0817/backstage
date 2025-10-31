@@ -4,6 +4,15 @@
   "include": [],
   "references": [
     {
+      "path": "../../shared/domain"
+    },
+    {
+      "path": "../messages-domain"
+    },
+    {
+      "path": "../../shared/application"
+    },
+    {
       "path": "./tsconfig.lib.json"
     },
     {

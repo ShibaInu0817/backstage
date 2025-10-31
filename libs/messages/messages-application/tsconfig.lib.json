@@ -19,6 +19,16 @@
     "../../../apps/message-command-processor/src/app/message-command-handler/create/create-message.handler.ts",
     "../../../apps/message-command-processor/src/app/message-command-handler/errors.ts"
   ],
-  "references": [],
+  "references": [
+    {
+      "path": "../../shared/domain/tsconfig.lib.json"
+    },
+    {
+      "path": "../messages-domain/tsconfig.lib.json"
+    },
+    {
+      "path": "../../shared/application/tsconfig.lib.json"
+    }
+  ],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }
