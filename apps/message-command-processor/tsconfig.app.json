@@ -21,6 +21,9 @@
   ],
   "references": [
     {
+      "path": "../../libs/shared/application/tsconfig.lib.json"
+    },
+    {
       "path": "../../libs/messages/messages-application/tsconfig.lib.json"
     },
     {

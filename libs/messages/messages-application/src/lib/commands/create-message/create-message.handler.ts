@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   type IMessageRepository,
   MESSAGE_REPOSITORY_TOKEN,
@@ -15,8 +15,6 @@ import { SaveMessageFailedError } from './create-message.errors';
 export class CreateMessageHandler
   implements ICommandHandler<CreateMessageCommand>
 {
-  private readonly logger = new Logger(CreateMessageCommand.name);
-
   constructor(
     @Inject(MESSAGE_REPOSITORY_TOKEN)
     private readonly messageRepository: IMessageRepository,
@@ -25,8 +23,6 @@ export class CreateMessageHandler
   ) {}
 
   async execute(command: CreateMessageCommand): Promise<MessageEntity> {
-    this.logger.debug('CreateMessageHandler', command);
-
     try {
       return await this.unitOfWork.executeInTransaction(async () => {
         // Domain decides how to construct a valid Message
@@ -57,9 +53,10 @@ export class CreateMessageHandler
 
         return savedMessage;
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Repository threw an infra error (DB-level)
-      throw new SaveMessageFailedError(err.message);
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      throw new SaveMessageFailedError(message);
     }
   }
 }

@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/shared/application"
+    },
+    {
       "path": "../../libs/messages/messages-application"
     },
     {

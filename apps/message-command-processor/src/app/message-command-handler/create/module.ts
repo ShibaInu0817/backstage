@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MessageInfraModule } from '@boilerplate/messages-infra';
 import { CreateMessageHandler } from '@boilerplate/messages-application';
+import { CqrsMiddlewareModule } from '@boilerplate/application';
 
 @Module({
-  imports: [CqrsModule, MessageInfraModule],
+  imports: [CqrsModule, CqrsMiddlewareModule, MessageInfraModule],
   providers: [CreateMessageHandler],
 })
 export class CreateMessageCommandHandlerModule {}

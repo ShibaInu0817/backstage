@@ -81,5 +81,20 @@ apps/api-gateway/src/app/messages/create/
 
 **Composition Root:** The app module (e.g., `api-gateway`) is the only place that knows about all layers. It imports feature modules (handlers) and infrastructure modules (concrete implementations), letting NestJS DI wire them together via tokens. This keeps the application layer pure and infrastructure pluggable.
 
+### 4. Why so many modules? What is the differences?
+
+The modules are following DDD practices, it follow the pattern: 
+```
+Root → Bounded Context → Use Case → Infrastructure.
+```
+
+| Module | Layer | Responsibility |
+|--------|-------|----------------|
+| `app.module.ts` | Application Root | Bootstrap entire app |
+| `messages/module.ts` | **Bounded Context Aggregate** | **Group all features for Messages domain** |
+| `create/module.ts` | Use Case/Application | Orchestrate single feature |
+| `messages-infra/module.ts` | Infrastructure | Technical implementations |
+
+
 ## References
 https://github.com/Sairyss/domain-driven-hexagon?tab=readme-ov-file#commands
