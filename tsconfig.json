@@ -29,12 +29,6 @@
     },
     {
       "path": "./libs/shared/application"
-    },
-    {
-      "path": "./apps/message-command-processor-e2e"
-    },
-    {
-      "path": "./apps/message-command-processor"
     }
   ]
 }
