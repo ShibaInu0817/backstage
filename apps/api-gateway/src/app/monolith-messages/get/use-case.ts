@@ -2,8 +2,8 @@ import {
   type IMessageRepository,
   MESSAGE_REPOSITORY_TOKEN,
   MessageEntity,
-  MessageNotFoundError,
 } from '@boilerplate/messages-domain';
+import { MessageNotFoundError } from '@boilerplate/messages-application';
 import { Injectable, Inject } from '@nestjs/common';
 
 interface GetMessageDto {

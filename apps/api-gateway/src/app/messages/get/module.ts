@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { GetMessageUseCase } from './use-case';
+import { CqrsModule } from '@nestjs/cqrs';
 import { GetMessageController } from './controller';
 import { MessageInfraModule } from '@boilerplate/messages-infra';
+import { GetMessageHandler } from '@boilerplate/messages-application';
+import { CqrsMiddlewareModule } from '@boilerplate/application';
 
 @Module({
-  imports: [MessageInfraModule],
-  providers: [GetMessageUseCase],
+  imports: [CqrsModule, CqrsMiddlewareModule, MessageInfraModule],
+  providers: [GetMessageHandler],
   controllers: [GetMessageController],
 })
 export class GetMessageModule {}

@@ -9,8 +9,13 @@ TODO:
 2. Add message queue and command processor
 3. Add CQRS pattern - https://chatgpt.com/share/68d0a69a-21c8-8006-9c46-c80a57152d13
 - Add query handler for get and list
-4. Add test for repository pattern
-5. Add prompt or full document for the flows
+- Add command handler for create and update
+- outbox repository
+- setup kafka and cdc
+- outbox cdc
+- 
+1. Add test for repository pattern
+2. Add prompt or full document for the flows
 
 
 What had been done:
