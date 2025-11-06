@@ -9,3 +9,5 @@ export * from './lib/commands/create-message/create-message.errors';
 export * from './lib/queries/get-message/get-message.query';
 export * from './lib/queries/get-message/get-message.handler';
 export * from './lib/queries/get-message/get-message.errors';
+export * from './lib/queries/list-messages/list-messages.query';
+export * from './lib/queries/list-messages/list-messages.handler';
