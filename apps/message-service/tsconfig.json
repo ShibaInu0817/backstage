@@ -4,6 +4,21 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/messages/messages-domain"
+    },
+    {
+      "path": "../../libs/shared/application"
+    },
+    {
+      "path": "../../libs/messages/messages-infra"
+    },
+    {
+      "path": "../../libs/messages/messages-application"
+    },
+    {
+      "path": "../../libs/shared/http"
+    },
+    {
       "path": "./tsconfig.app.json"
     },
     {

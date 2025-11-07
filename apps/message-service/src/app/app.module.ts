@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MessageModule } from './messages/module';
+import { HttpModule } from '@boilerplate/http';
+import { MonolithMessageModule } from './monolith-messages/module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [HttpModule, MessageModule, MonolithMessageModule],
 })
 export class AppModule {}
