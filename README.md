@@ -96,5 +96,71 @@ Root → Bounded Context → Use Case → Infrastructure.
 | `messages-infra/module.ts` | Infrastructure | Technical implementations |
 
 
+### 5. Architecture Diagram
+The messages service is a bounded context, handling CRUD controllers with command handlers. It will trigger outbox cdc and publish to kafka.
+
+   **Same bounded context:**
+   - Commands → Write to DB + Outbox
+   - CDC → Publish events
+   - Consumers → Update read models ← Same service queries these
+   - Queries → Read from read models
+
+The kafka consumer can be splited into a new service `messages-event-processor` when:
+  - When event processing becomes heavy (ML, external APIs)
+  - When 5+ services need to consume the same events
+  - When you need different teams for write vs read
+
+The architecture diagram is as follows:
+
+                              ┌─────────────────────┐
+                              │    API Gateway      │
+                              │  (Port 3000)        │
+                              └──────────┬──────────┘
+                                         │ HTTP
+                                         ▼
+                              ┌─────────────────────┐
+                              │  Messages Service   │
+                              │  (Port 3001)        │
+                              ├─────────────────────┤
+                              │ • REST Controllers  │
+                              │ • Command Handlers  │
+                              │ • Query Handlers    │
+                              │ • Write DB + Outbox │
+                              │                     │
+                              │ • Kafka Consumers   │◄──────┐
+                              │ • Update Read Models│       │
+                              └─────────┬───────────┘       │
+                                        │                   │
+                                        │ write             │ consume
+                                        ▼                   │
+                              ┌─────────────────────┐       │
+                              │      MongoDB        │       │
+                              ├─────────────────────┤       │
+                              │ • messages (write)  │       │
+                              │ • outbox (shared)   │       │
+                              │ • processed_events  │       │
+                              └─────────┬───────────┘       │
+                                        │                   │
+                                        │ CDC               │
+                                        │ (change stream)   │
+                                        ▼                   │
+                              ┌─────────────────────┐       │
+                              │  Event Publisher    │       │
+                              │  (Port 3002)        │       │
+                              ├─────────────────────┤       │
+                              │ • Watch Outbox      │       │
+                              │ • Publish to Kafka  │       │
+                              │ • Mark as SENT      │       │
+                              └─────────┬───────────┘       │
+                                        │                   │
+                                        │ publish           │
+                                        ▼                   │
+                              ┌─────────────────────┐       │
+                              │       Kafka         │       │
+                              │  Topic:             │       │
+                              │  - message.created  │───────┘
+                              │  - message.updated  │
+                              └─────────────────────┘
+
 ## References
 https://github.com/Sairyss/domain-driven-hexagon?tab=readme-ov-file#commands
