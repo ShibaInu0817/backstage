@@ -1,0 +1,32 @@
+{
+  "$schema": "./proxy-config.schema.json",
+  "services": [
+    {
+      "path": "/api/messages",
+      "target": "http://localhost:3001",
+      "pathRewrite": {
+        "^/api/messages": "/messages"
+      },
+      "enabled": true
+    },
+    {
+      "path": "/api/users",
+      "target": "http://localhost:3002",
+      "pathRewrite": {
+        "^/api/users": "/users"
+      },
+      "enabled": false
+    },
+    {
+      "path": "/api/orders",
+      "target": "http://localhost:3003",
+      "pathRewrite": {
+        "^/api/orders": "/orders"
+      },
+      "enabled": false
+    }
+  ],
+  "defaultTimeout": 30000,
+  "logLevel": "info"
+}
+

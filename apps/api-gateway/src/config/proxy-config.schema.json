@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "API Gateway Proxy Configuration",
+  "description": "Configuration for HTTP proxy routing in the API Gateway",
+  "type": "object",
+  "properties": {
+    "services": {
+      "type": "array",
+      "description": "List of microservices to proxy",
+      "items": {
+        "type": "object",
+        "required": ["path", "target"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path pattern to match (e.g., /api/messages)",
+            "pattern": "^/api/"
+          },
+          "target": {
+            "type": "string",
+            "description": "The target URL of the backend service",
+            "pattern": "^https?://"
+          },
+          "pathRewrite": {
+            "type": "object",
+            "description": "Path rewrite rules (regex pattern -> replacement)",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this proxy route is enabled",
+            "default": true
+          }
+        }
+      }
+    },
+    "defaultTimeout": {
+      "type": "number",
+      "description": "Default timeout in milliseconds for all proxied requests",
+      "default": 30000,
+      "minimum": 1000
+    },
+    "logLevel": {
+      "type": "string",
+      "description": "Logging level for proxy operations",
+      "enum": ["debug", "info", "warn", "error", "silent"],
+      "default": "info"
+    }
+  },
+  "required": ["services"]
+}
+

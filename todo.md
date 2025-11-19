@@ -24,5 +24,6 @@ What had been done:
 3. Repository pattern
 4. Add List and pagination sample
 4. Add Swagger documentation
+5. Init api gateway with proxy config
 
 
