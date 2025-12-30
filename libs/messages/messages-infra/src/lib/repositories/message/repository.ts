@@ -125,7 +125,6 @@ export class MessageRepository implements IMessageRepository {
     // Extract Mongoose session if UoW is provided
     const session =
       uow instanceof MongooseUnitOfWork ? uow.getSession() : undefined;
-
     const updated = await this.messageModel
       .findByIdAndUpdate(entity.id, this.toPersistence(entity), {
         new: true,
