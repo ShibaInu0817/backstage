@@ -34,6 +34,7 @@ export class MessageRepository implements IMessageRepository {
       tenantId: doObj.tenantId,
       timestamp: doObj.timestamp,
       metadata: doObj.metadata,
+      version: doObj.version,
     });
   }
 
@@ -46,6 +47,7 @@ export class MessageRepository implements IMessageRepository {
       tenantId: entity.tenantId,
       timestamp: entity.timestamp,
       metadata: entity.metadata,
+      version: entity.version,
     };
   }
 
