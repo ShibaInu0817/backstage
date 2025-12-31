@@ -124,16 +124,39 @@ export class MessageRepository implements IMessageRepository {
     entity: MessageEntity,
     uow?: IUnitOfWork
   ): Promise<MessageEntity> {
-    // Extract Mongoose session if UoW is provided
     const session =
       uow instanceof MongooseUnitOfWork ? uow.getSession() : undefined;
+
     const updated = await this.messageModel
-      .findByIdAndUpdate(entity.id, this.toPersistence(entity), {
-        new: true,
-        session,
-      })
+      .findOneAndUpdate(
+        {
+          _id: entity.id,
+          tenantId: entity.tenantId,
+          conversationId: entity.conversationId,
+          version: entity.version, // concurrency check
+        },
+        {
+          $set: {
+            content: entity.content,
+            metadata: entity.metadata,
+          },
+          $inc: {
+            version: 1, // atomic increment
+          },
+        },
+        {
+          new: true,
+          session,
+        }
+      )
       .exec();
-    if (!updated) throw new Error('Update failed');
+
+    if (!updated) {
+      throw new Error(
+        `Message ${entity.id} was updated by another transaction or does not exist`
+      );
+    }
+
     return this.toEntity(updated);
   }
 

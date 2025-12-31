@@ -1,4 +1,5 @@
-import { BaseEntity, BaseEntityProps } from '@boilerplate/domain';
+import { BaseEntity, BaseEntityProps, OptimisticLockError } from '@boilerplate/domain';
+
 
 export interface MessageProps extends BaseEntityProps {
   conversationId: string;
@@ -35,5 +36,28 @@ export class MessageEntity extends BaseEntity {
   updateContent(newContent: string): void {
     if (!newContent?.trim()) throw new Error('Content cannot be empty');
     this.content = newContent;
+  }
+
+  updateMetadata(newMetadata: Record<string, any>): void {
+    this.metadata = { ...this.metadata, ...newMetadata };
+  }
+
+  update(
+    props: { content?: string; metadata?: Record<string, any> },
+    expectedVersion?: number
+  ): void {
+    if (expectedVersion !== undefined && expectedVersion !== this.version) {
+      throw new OptimisticLockError(
+        `Message ${this.id} version mismatch. Expected ${expectedVersion} but got ${this.version}`
+      );
+    }
+
+    if (props.content !== undefined) {
+      this.updateContent(props.content);
+    }
+
+    if (props.metadata !== undefined) {
+      this.updateMetadata(props.metadata);
+    }
   }
 }

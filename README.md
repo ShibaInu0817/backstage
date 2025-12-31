@@ -162,5 +162,24 @@ The architecture diagram is as follows:
                               │  - message.updated  │
                               └─────────────────────┘
 
+### 6. Restful or RPC style api?
+We follow how stripe does it. Mix restful and rpc style api base on the following rules:
+
+```
+# Resource use Restful (GET, PATCH)
+GET   /orders/{id}
+PATCH /orders/{id}          # name, notes, metadata
+
+# Commands use RPC (POST)
+POST /orders/{id}/confirm
+POST /orders/{id}/cancel
+POST /orders/{id}/refund
+```
+
+#### General rules
+> If the operation changes business meaning, it is a command. 
+> If it only changes data shape, it can be a resource update
+
+
 ## References
 https://github.com/Sairyss/domain-driven-hexagon?tab=readme-ov-file#commands
