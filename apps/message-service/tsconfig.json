@@ -13,6 +13,9 @@
       "path": "../../libs/messages/messages-infra"
     },
     {
+      "path": "../../libs/shared/auth"
+    },
+    {
       "path": "../../libs/messages/messages-application"
     },
     {

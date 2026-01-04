@@ -1,12 +1,15 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SortOrder } from '@boilerplate/messages-domain';
 import { ListMessagesQuery } from '@boilerplate/messages-application';
 import { ListMessagesQueryDto } from './query.dto';
+import { ClerkAuthGuard, CurrentUserSession, UserSession } from '@boilerplate/auth';
 
 @ApiTags('message')
+@ApiBearerAuth()
 @Controller({ path: 'messages', version: ['1'] })
+@UseGuards(ClerkAuthGuard)
 export class ListMessagesController {
   constructor(private readonly queryBus: QueryBus) {}
 
@@ -24,13 +27,16 @@ export class ListMessagesController {
     status: 400,
     description: 'Invalid query parameters',
   })
-  async listMessages(@Query() query: ListMessagesQueryDto) {
+  async listMessages(
+    @Query() query: ListMessagesQueryDto,
+    @CurrentUserSession() session: UserSession
+  ) {
     const listQuery = new ListMessagesQuery(
       query.conversationId,
       query.limit ?? 20,
       query.sortBy ?? 'timestamp',
       query.sortOrder ?? SortOrder.DESC,
-      query.tenantId,
+      session.tenantId,
       query.senderId,
       query.startDate ? new Date(query.startDate) : undefined,
       query.endDate ? new Date(query.endDate) : undefined,

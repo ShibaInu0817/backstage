@@ -1,11 +1,14 @@
-import { Body, Controller, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Param, Patch, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { MessageResponseDto, UpdateMessageCommand } from '@boilerplate/messages-application';
 import { UpdateMessageDto } from './dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ClerkAuthGuard, CurrentUserSession, UserSession } from '@boilerplate/auth';
 
 @ApiTags('message')
+@ApiBearerAuth()
 @Controller({ path: 'message', version: ['1'] })
+@UseGuards(ClerkAuthGuard)
 export class UpdateMessageController {
   constructor(private readonly commandBus: CommandBus) {}
 
@@ -13,11 +16,12 @@ export class UpdateMessageController {
   async updateMessage(
     @Param('conversationId') conversationId: string,
     @Param('id') id: string,
-    @Body() body: UpdateMessageDto
+    @Body() body: UpdateMessageDto,
+    @CurrentUserSession() session: UserSession
   ) {
     const command = new UpdateMessageCommand(
       id,
-      body.tenantId,
+      session.tenantId,
       conversationId,
       body.content,
       body.metadata

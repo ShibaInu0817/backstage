@@ -22,14 +22,6 @@ export class ListMessagesQueryDto {
   conversationId!: string;
 
   @ApiPropertyOptional({
-    description: 'The tenant id to filter messages',
-    example: '123',
-  })
-  @IsOptional()
-  @IsString()
-  tenantId?: string;
-
-  @ApiPropertyOptional({
     description: 'The sender id to filter messages',
     example: 'user123',
   })

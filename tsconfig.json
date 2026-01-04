@@ -35,6 +35,9 @@
     },
     {
       "path": "./apps/message-service"
+    },
+    {
+      "path": "./libs/shared/auth"
     }
   ]
 }

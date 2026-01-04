@@ -4,9 +4,15 @@ import { CreateMessageController } from './controller';
 import { MessageInfraModule } from '@boilerplate/messages-infra';
 import { CreateMessageHandler } from '@boilerplate/messages-application';
 import { CqrsMiddlewareModule } from '@boilerplate/application';
+import { SharedAuthModule } from '@boilerplate/auth';
 
 @Module({
-  imports: [CqrsModule, CqrsMiddlewareModule, MessageInfraModule],
+  imports: [
+    CqrsModule,
+    CqrsMiddlewareModule,
+    MessageInfraModule,
+    SharedAuthModule,
+  ],
   providers: [CreateMessageHandler],
   controllers: [CreateMessageController],
 })

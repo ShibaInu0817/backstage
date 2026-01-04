@@ -28,6 +28,9 @@
       "path": "../../libs/messages/messages-infra/tsconfig.lib.json"
     },
     {
+      "path": "../../libs/shared/auth/tsconfig.lib.json"
+    },
+    {
       "path": "../../libs/messages/messages-application/tsconfig.lib.json"
     },
     {

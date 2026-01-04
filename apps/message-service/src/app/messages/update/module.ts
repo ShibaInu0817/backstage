@@ -4,9 +4,15 @@ import { UpdateMessageController } from './controller';
 import { MessageInfraModule } from '@boilerplate/messages-infra';
 import { UpdateMessageHandler } from '@boilerplate/messages-application';
 import { CqrsMiddlewareModule } from '@boilerplate/application';
+import { SharedAuthModule } from '@boilerplate/auth';
 
 @Module({
-  imports: [CqrsModule, CqrsMiddlewareModule, MessageInfraModule],
+  imports: [
+    CqrsModule,
+    CqrsMiddlewareModule,
+    MessageInfraModule,
+    SharedAuthModule,
+  ],
   providers: [UpdateMessageHandler],
   controllers: [UpdateMessageController],
 })

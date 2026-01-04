@@ -27,3 +27,8 @@ What had been done:
 5. Init api gateway with proxy config
 
 
+
+Clerk
+Goto https://optimal-cheetah-79.accounts.dev/user
+console --> window.Clerk.session.getToken().then(console.log)
+copy the token to swagger

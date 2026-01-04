@@ -19,7 +19,7 @@ export class GetMessageHandler implements IQueryHandler<GetMessageQuery> {
   async execute(query: GetMessageQuery): Promise<MessageEntity> {
     const message = await this.messageRepository.findById(query.id);
 
-    if (!message) {
+    if (!message || message.tenantId !== query.tenantId) {
       throw new MessageNotFoundError(query.id);
     }
 

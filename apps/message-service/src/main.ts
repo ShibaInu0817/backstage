@@ -24,6 +24,7 @@ function initSwagger(app: INestApplication) {
     .setTitle('Message Service')
     .setDescription('Message Service for the application')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

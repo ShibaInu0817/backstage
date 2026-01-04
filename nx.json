@@ -35,7 +35,8 @@
         "libs/shared/infra/*",
         "libs/shared/http/*",
         "libs/shared/domain/*",
-        "libs/shared/application/*"
+        "libs/shared/application/*",
+        "libs/shared/auth/*"
       ]
     },
     {
@@ -76,7 +77,8 @@
         "libs/shared/infra/*",
         "libs/shared/http/*",
         "libs/shared/domain/*",
-        "libs/shared/application/*"
+        "libs/shared/application/*",
+        "libs/shared/auth/*"
       ],
       "options": {
         "typecheck": {
