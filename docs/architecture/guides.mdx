@@ -1,0 +1,53 @@
+---
+title: "Development Guide"
+description: "How to extend the system and common patterns."
+---
+
+# Engineering Guide
+
+Ready to build? Follow these patterns to ensure your code matches the system's architectural standards.
+
+## Adding a New Feature
+
+### 1. Define the Domain (libs/new-domain/domain)
+- Create your **Entity** (extend `BaseEntity`).
+- Define the **Repository Interface**.
+- Define any custom **Domain Errors**.
+
+### 2. Implement the Use Case (libs/new-domain/application)
+- Create a **Command** (DTO).
+- Create a **Command Handler**.
+- Inject the repository interface.
+
+### 3. Build Infrastructure (libs/new-domain/infra)
+- Create the **Mongoose Schema**.
+- Implement the **Repository**.
+
+### 4. Expose via API (apps/new-service)
+- Create the **Controller**.
+- Dispatch the command.
+- Update `api-gateway` proxy config.
+
+## CodeWiki Standards
+
+When contributing to this wiki or the code, keep these "Why" principles in mind:
+
+| Decision | Why? |
+| :--- | :--- |
+| **Command Bus** | Decouples the *Intent* from the *Implementation*. Makes testing trivial. |
+| **Interfaces for Repos** | Allows swapping MongoDB for PostgreSQL (or a Mock) without touching business logic. |
+| **Strict DTOs** | Prevents "Overposting" attacks and ensures payload validation. |
+
+---
+
+## Common Pitfalls to Avoid
+
+- [ ] **Cross-module imports**: Never import `libs/messages-infra` into `libs/orders-domain`.
+- [ ] **Missing Tenant Check**: Forgetting `tenantId` in a query.
+- [ ] **Heavy Controllers**: Keeping business logic in the controller instead of the handler.
+- [ ] **Syncing across services**: Don't call Service A from Service B synchronously. Use Events (future-ready).
+
+## Maintenance Tools
+- `nx lint`: Keeps code style consistent.
+- `nx test`: Runs unit tests.
+- `nx graph`: Visualizes the dependency tree.

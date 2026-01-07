@@ -48,6 +48,23 @@
         ]
       },
       {
+        "tab": "Developer",
+        "groups": [
+          {
+            "group": "Engineering Wiki",
+            "pages": [
+              "architecture/overview",
+              "architecture/structure",
+              "architecture/flows",
+              "architecture/persistence",
+              "architecture/security",
+              "architecture/guides",
+              "module-boundaries"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API reference",
         "groups": [
           {
