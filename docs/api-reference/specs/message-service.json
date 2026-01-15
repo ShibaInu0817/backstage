@@ -1,0 +1,375 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/messages/message/{id}": {
+      "get": {
+        "description": "Retrieves a message by its ID",
+        "operationId": "GetMessageController_getData",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get message by id",
+        "tags": [
+          "message"
+        ]
+      }
+    },
+    "/api/messages/message": {
+      "post": {
+        "description": "Creates a new message based on the provided data",
+        "operationId": "CreateMessageController_createMessage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create message",
+        "tags": [
+          "message"
+        ]
+      }
+    },
+    "/api/messages": {
+      "get": {
+        "description": "Retrieves a paginated list of messages for a specific conversation with filtering and sorting options",
+        "operationId": "ListMessagesController_listMessages",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "query",
+            "description": "The conversation id to filter messages",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "senderId",
+            "required": false,
+            "in": "query",
+            "description": "The sender id to filter messages",
+            "schema": {
+              "example": "user123",
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering messages (ISO 8601 format)",
+            "schema": {
+              "example": "2024-01-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering messages (ISO 8601 format)",
+            "schema": {
+              "example": "2024-12-31T23:59:59.999Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchText",
+            "required": false,
+            "in": "query",
+            "description": "Search text to filter messages by content",
+            "schema": {
+              "example": "hello world",
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for pagination (base64 encoded)",
+            "schema": {
+              "example": "eyJ0aW1lc3RhbXAiOjE2OTc...",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Field to sort by",
+            "schema": {
+              "default": "timestamp",
+              "example": "timestamp",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "example": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid query parameters"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List messages by conversation ID",
+        "tags": [
+          "message"
+        ]
+      }
+    },
+    "/api/messages/message/conversations/{conversationId}/messages/{id}": {
+      "patch": {
+        "description": "Updates a message by its ID",
+        "operationId": "UpdateMessageController_updateMessage",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update message by id",
+        "tags": [
+          "message"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Message Service",
+    "description": "Message Service for the application",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://127.0.0.1:3000",
+      "description": "Local API Gateway"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "MessageResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "conversationId": {
+            "type": "string"
+          },
+          "senderId": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "conversationId",
+          "senderId",
+          "content",
+          "tenantId",
+          "timestamp"
+        ]
+      },
+      "CreateMessageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The content of the message",
+            "example": "Hello, world!"
+          },
+          "conversationId": {
+            "type": "string",
+            "description": "The conversation id",
+            "example": "123"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "The metadata of the message",
+            "example": {
+              "key": "value"
+            }
+          }
+        },
+        "required": [
+          "content",
+          "conversationId",
+          "metadata"
+        ]
+      },
+      "UpdateMessageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The updated content of the message",
+            "example": "Updated Hello, world!"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "The metadata of the message",
+            "example": {
+              "key": "updated_value"
+            }
+          }
+        },
+        "required": [
+          "content",
+          "metadata"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

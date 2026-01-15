@@ -4,7 +4,7 @@ import {
   GetMessageQuery,
   MessageResponseDto,
 } from '@boilerplate/messages-application';
-import { ApiTags, ApiOkResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOkResponse, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { MessageEntity } from '@boilerplate/messages-domain';
 import { ClerkAuthGuard, CurrentUserSession, UserSession } from '@boilerplate/auth';
 
@@ -16,6 +16,7 @@ export class GetMessageController {
   constructor(private readonly queryBus: QueryBus) {}
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get message by id', description: 'Retrieves a message by its ID' })
   @ApiOkResponse({ type: MessageResponseDto })
   async getData(
     @Param('id') id: string,

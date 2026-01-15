@@ -1,0 +1,45 @@
+---
+title: "Auth & Security"
+description: "Identity management and tenant isolation."
+---
+
+# Security Considerations
+
+Security is baked into the foundation of the system, focusing on robust identity verification and strict data isolation.
+
+## Authentication: Clerk
+
+We leverage [Clerk](https://clerk.com/) for managed authentication.
+
+### Token Flow
+1. Client authenticates with Clerk and receives a JWT.
+2. Client sends JWT in the `Authorization: Bearer <token>` header.
+3. `ClerkAuthGuard` validates the token using the Clerk SDK.
+4. The validated payload is attached to the request.
+
+### The `@CurrentUser` Decorator
+Developers can easily access the user's context in any controller:
+
+```typescript
+@Get()
+async getMyMessages(@CurrentUser() user: AuthUser) {
+  // user.userId and user.tenantId are automatically populated
+}
+```
+
+## Multi-Tenancy
+
+The system uses **Database-level logical isolation**. Every query *must* include the `tenantId`.
+
+> [!CAUTION]
+> **Security Guardrails**  
+> Our repository implementation automatically enforces `tenantId` filtering. Bypassing this is a security violation and should only be done for cross-tenant administrative tasks.
+
+## Error Handling
+
+We avoid leaking internal system details in error messages.
+- **Production**: Errors are mapped to standard HTTP codes with generic messages.
+- **Development**: Detailed stacks are available via the `HttpModule` logger.
+
+## Rate Limiting (Planned)
+Global rate limiting is planned for the `api-gateway` layer to prevent abuse and DDoS attacks.

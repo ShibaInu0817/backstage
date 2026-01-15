@@ -5,7 +5,7 @@ This library was generated with [Nx](https://nx.dev).
 
 ## Clerk
 Goto https://optimal-cheetah-79.accounts.dev/user
-console --> window.Clerk.session.getToken().then(console.log)
+console --> await window.Clerk.session.getToken().then(console.log)
 copy the token to swagger
 
 
