@@ -74,13 +74,12 @@
             ]
           },
           {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
+            "group": "System Health",
+            "openapi": "api-reference/specs/api-gateway.json"
+          },
+          {
+            "group": "Messaging API",
+            "openapi": "api-reference/specs/message-service.json"
           }
         ]
       }
@@ -128,6 +127,11 @@
       "cursor",
       "vscode"
     ]
+  },
+  "api": {
+    "playground": {
+      "proxy": false
+    }
   },
   "footer": {
     "socials": {
