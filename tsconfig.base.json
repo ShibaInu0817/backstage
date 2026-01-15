@@ -22,6 +22,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
+      "@boilerplate/application": ["libs/shared/application/src/index.ts"],
+      "@boilerplate/auth": ["libs/shared/auth/src/index.ts"],
       "@boilerplate/domain": ["libs/shared/domain/src/index.ts"],
       "@boilerplate/http": ["libs/shared/http/src/index.ts"],
       "@boilerplate/infra": ["libs/shared/infra/src/index.ts"],

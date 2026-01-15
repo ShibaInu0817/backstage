@@ -1,0 +1,16 @@
+{
+  "$schema": "./proxy-config.schema.json",
+  "services": [
+    {
+      "path": "/api/messages",
+      "target": "http://localhost:3001",
+      "pathRewrite": {
+        "^/api/messages": "/messages"
+      },
+      "enabled": true
+    }
+  ],
+  "defaultTimeout": 30000,
+  "logLevel": "info"
+}
+

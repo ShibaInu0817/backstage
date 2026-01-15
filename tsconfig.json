@@ -29,6 +29,15 @@
     },
     {
       "path": "./libs/shared/application"
+    },
+    {
+      "path": "./apps/message-service-e2e"
+    },
+    {
+      "path": "./apps/message-service"
+    },
+    {
+      "path": "./libs/shared/auth"
     }
   ]
 }

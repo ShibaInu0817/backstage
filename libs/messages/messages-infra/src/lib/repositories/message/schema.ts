@@ -1,24 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
+import { BaseDo } from '@boilerplate/infra';
 
 @Schema({
   timestamps: true,
   collection: 'messages',
 })
-export class MessageDo {
-  //#region  Id conversion
-  // Handle the conversion of the MongoDB internal _id field to a string
-  _id!: mongoose.Types.ObjectId;
-
-  // Virtual getter/setter for id that maps to _id
-  get id(): string {
-    return this._id.toString();
-  }
-  set id(value: string) {
-    this._id = new mongoose.Types.ObjectId(value);
-  }
-  //#endregion
-
+export class MessageDo extends BaseDo {
   @Prop({ required: true, type: String })
   tenantId!: string;
 
@@ -33,13 +21,6 @@ export class MessageDo {
 
   @Prop({ required: true, type: Date })
   timestamp!: Date;
-
-  /**
-   * Optional metadata associated with the message
-   * Can contain additional properties like read status or any unexpected attributes, etc.
-   */
-  @Prop({ type: Object })
-  metadata?: Record<string, any>;
 }
 
 // Create the schema from the class

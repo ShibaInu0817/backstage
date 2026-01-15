@@ -35,7 +35,8 @@
         "libs/shared/infra/*",
         "libs/shared/http/*",
         "libs/shared/domain/*",
-        "libs/shared/application/*"
+        "libs/shared/application/*",
+        "libs/shared/auth/*"
       ]
     },
     {
@@ -60,7 +61,12 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/boilerplate-e2e/**/*", "apps/api-gateway-e2e/**/*"]
+      "exclude": [
+        "apps/boilerplate-e2e/**/*",
+        "apps/api-gateway-e2e/**/*",
+        "apps/message-command-processor-e2e/**/*",
+        "apps/message-service-e2e/**/*"
+      ]
     },
     {
       "plugin": "@nx/js/typescript",
@@ -71,7 +77,8 @@
         "libs/shared/infra/*",
         "libs/shared/http/*",
         "libs/shared/domain/*",
-        "libs/shared/application/*"
+        "libs/shared/application/*",
+        "libs/shared/auth/*"
       ],
       "options": {
         "typecheck": {

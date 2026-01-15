@@ -2,12 +2,16 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MessageRepository } from './repositories/message/repository';
 import { MessageDo, MessageSchema } from './repositories/message/schema';
-import { SampleTemplateMongodbModule } from '@boilerplate/infra';
+import {
+  MongooseUnitOfWorkModule,
+  SampleTemplateMongodbModule,
+} from '@boilerplate/infra';
 import { MESSAGE_REPOSITORY_TOKEN } from '@boilerplate/messages-domain';
 
 @Module({
   imports: [
     SampleTemplateMongodbModule,
+    MongooseUnitOfWorkModule,
     MongooseModule.forFeature([
       { name: MessageDo.name, schema: MessageSchema },
     ]),
@@ -18,6 +22,6 @@ import { MESSAGE_REPOSITORY_TOKEN } from '@boilerplate/messages-domain';
       useClass: MessageRepository,
     },
   ],
-  exports: [MESSAGE_REPOSITORY_TOKEN],
+  exports: [MESSAGE_REPOSITORY_TOKEN, MongooseUnitOfWorkModule],
 })
 export class MessageInfraModule {}

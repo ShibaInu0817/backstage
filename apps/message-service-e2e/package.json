@@ -1,0 +1,26 @@
+{
+  "name": "@boilerplate/message-service-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@boilerplate/message-service"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/message-service-e2e/jest.config.ts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@boilerplate/message-service:build",
+          "@boilerplate/message-service:serve"
+        ]
+      }
+    }
+  }
+}

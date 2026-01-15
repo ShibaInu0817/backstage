@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "../../libs/messages/messages-domain"
+    },
+    {
+      "path": "../../libs/shared/application"
+    },
+    {
+      "path": "../../libs/messages/messages-infra"
+    },
+    {
+      "path": "../../libs/shared/auth"
+    },
+    {
+      "path": "../../libs/messages/messages-application"
+    },
+    {
+      "path": "../../libs/shared/http"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

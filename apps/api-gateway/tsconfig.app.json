@@ -17,18 +17,5 @@
     "eslint.config.cjs",
     "eslint.config.mjs"
   ],
-  "references": [
-    {
-      "path": "../../libs/shared/application/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/messages/messages-domain/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/messages/messages-infra/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/shared/http/tsconfig.lib.json"
-    }
-  ]
+  "references": []
 }

@@ -1,4 +1,5 @@
 import { MessageEntity } from './entity';
+import { IUnitOfWork } from '@boilerplate/domain';
 
 export enum SortOrder {
   ASC = 'asc',
@@ -51,7 +52,8 @@ export interface FindByConversationIdFilter {
 }
 
 export interface IMessageRepository {
-  create(message: MessageEntity): Promise<MessageEntity>;
+  create(message: MessageEntity, uow?: IUnitOfWork): Promise<MessageEntity>;
+  update(message: MessageEntity, uow?: IUnitOfWork): Promise<MessageEntity>;
   findAll(): Promise<MessageEntity[]>;
   findById(id: string): Promise<MessageEntity | null>;
   findByConversationId(
