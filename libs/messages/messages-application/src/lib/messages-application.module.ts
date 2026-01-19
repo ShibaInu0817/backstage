@@ -1,8 +1,9 @@
-// import { Module } from '@nestjs/common';
-// @Module({
-//   imports: [],
-//   controllers: [],
-//   providers: [],
-//   exports: [],
-// })
-// export class BoilerplateMessagesApplicationModule {}
+import { Module } from '@nestjs/common';
+
+@Module({
+  imports: [],
+  controllers: [],
+  providers: [],
+  exports: [],
+})
+export class MessagesApplicationModule {}
