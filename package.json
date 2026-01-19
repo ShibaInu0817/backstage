@@ -23,6 +23,7 @@
     "axios": "^1.6.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "mongoose": "^8.21.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0"
   },
@@ -50,6 +51,7 @@
     "jest": "^30.0.2",
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
+    "jsonc-eslint-parser": "^2.1.0",
     "nx": "21.4.1",
     "prettier": "^2.6.2",
     "ts-jest": "^29.4.0",
@@ -62,6 +64,7 @@
   "workspaces": [
     "apps/*",
     "libs/messages/*",
-    "libs/shared/*"
+    "libs/shared/*",
+    "libs/outbox/*"
   ]
 }
